@@ -99,6 +99,8 @@ pcl::gpu::KinfuTracker::KinfuTracker (int rows, int cols) : rows_(rows), cols_(c
   rmats_.reserve (30000);
   tvecs_.reserve (30000);
 
+  resetOnICPFail=true;
+
   reset ();
 }
 
@@ -229,8 +231,7 @@ pcl::gpu::KinfuTracker::allocateBufffers (int rows, int cols)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 bool
-pcl::gpu::KinfuTracker::operator() (const DepthMap& depth_raw, 
-    Eigen::Affine3f *hint)
+pcl::gpu::KinfuTracker::operator() (const DepthMap& depth_raw, Eigen::Affine3f *hint)
 {  
   device::Intr intr (fx_, fy_, cx_, cy_);
 
@@ -343,8 +344,10 @@ pcl::gpu::KinfuTracker::operator() (const DepthMap& depth_raw,
             if (fabs (det) < 1e-15 || pcl_isnan (det))
             {
               if (pcl_isnan (det)) cout << "qnan" << endl;
-
-              reset ();
+              if(resetOnICPFail)
+              {
+                reset ();
+              }
               return (false);
             }
             //float maxc = A.maxCoeff();
@@ -394,6 +397,7 @@ pcl::gpu::KinfuTracker::operator() (const DepthMap& depth_raw,
   float tnorm = (tcurr - tprev).norm();  
   const float alpha = 1.f;
   bool integrate = (rnorm + alpha * tnorm)/2 >= integration_metric_threshold_;
+  //bool integrate=true;
 
   if (disable_icp_)
     integrate = true;
@@ -530,9 +534,9 @@ pcl::gpu::KinfuTracker::initColorIntegration(int max_weight)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 bool 
-pcl::gpu::KinfuTracker::operator() (const DepthMap& depth, const View& colors)
+pcl::gpu::KinfuTracker::operator() (const DepthMap& depth, const View& colors, Eigen::Affine3f *hint)
 { 
-  bool res = (*this)(depth);
+  bool res = (*this)(depth,hint);
 
   if (res && color_volume_)
   {

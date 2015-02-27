@@ -154,7 +154,7 @@ namespace pcl
           * \param[in] colors next RGB frame
           * \return true if can render 3D view.
           */
-        bool operator() (const DepthMap& depth, const View& colors);
+        bool operator() (const DepthMap& depth, const View& colors, Eigen::Affine3f* hint=NULL);
 
         /** \brief Returns camera pose at given time, default the last pose
           * \param[in] time Index of frame for which camera pose is returned.
@@ -200,6 +200,16 @@ namespace pcl
         /** \brief Disables ICP forever */
         void disableIcp();
 
+        void setResetOnICPFail(bool v)
+        {
+            resetOnICPFail=v;
+        }
+
+        bool isResetOnICPFail()
+        {
+            return resetOnICPFail;
+        }
+
       private:
         
         /** \brief Number of pyramid levels */
@@ -213,6 +223,12 @@ namespace pcl
         
         typedef Eigen::Matrix<float, 3, 3, Eigen::RowMajor> Matrix3frm;
         typedef Eigen::Vector3f Vector3f;
+
+        /**
+         *
+         * by padeler: kinfu will reset the volume every time the ICP fails.
+         */
+        bool resetOnICPFail;
 
         /** \brief Height of input depth image. */
         int rows_;
