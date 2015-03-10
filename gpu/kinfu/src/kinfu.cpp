@@ -374,15 +374,48 @@ pcl::gpu::KinfuTracker::operator() (const DepthMap& depth_raw, Eigen::Affine3f *
   } 
   else /* if (disable_icp_) */
   {
-      if (global_time_ == 0)
-        ++global_time_;
+     bool firstTime=false;
+     if(global_time_ ==0)
+     {
+         global_time_++;
+         firstTime=true;
+     }
 
-      Matrix3frm Rcurr = rmats_[global_time_ - 1];
-      Vector3f   tcurr = tvecs_[global_time_ - 1];
+    
+      Matrix3frm Rcurr;
+      Vector3f   tcurr;
+
+      if(hint)
+      {
+          Rcurr = hint->rotation().matrix();
+          tcurr = hint->translation().matrix();
+      }
+      else
+      {
+          Rcurr = rmats_[global_time_ - 1];
+          tcurr = tvecs_[global_time_ - 1];
+      }
 
       rmats_.push_back (Rcurr);
       tvecs_.push_back (tcurr);
+      
+      //can't perform more on first frame
+      if (firstTime)
+      {
+        Matrix3frm init_Rcam = Rcurr; //  [Ri|ti] - pos of camera, i.e.
+        Vector3f   init_tcam = tcurr; //  transform from camera to global coo space for (i-1)th camera pose
 
+        Mat33&  device_Rcam = device_cast<Mat33> (init_Rcam);
+        float3& device_tcam = device_cast<float3>(init_tcam);
+
+        Matrix3frm init_Rcam_inv = init_Rcam.inverse ();
+        Mat33&   device_Rcam_inv = device_cast<Mat33> (init_Rcam_inv);
+        float3 device_volume_size = device_cast<const float3>(tsdf_volume_->getSize());
+
+        device::integrateTsdfVolume(depth_raw, intr, device_volume_size, device_Rcam_inv, device_tcam, tsdf_volume_->getTsdfTruncDist(), tsdf_volume_->data(), depthRawScaled_);
+
+        return (false);
+      }
   }
 
   Matrix3frm Rprev = rmats_[global_time_ - 1];
