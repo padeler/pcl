@@ -156,6 +156,32 @@ namespace pcl
           */
         bool operator() (const DepthMap& depth, const View& colors, Eigen::Affine3f* hint=NULL);
 
+
+
+        /**
+         * Update the camera position and increment global counter.
+         * If icp is disabled this method should be called before integration
+         */
+        bool updateCamera(Eigen::Affine3f* hint=NULL);
+
+
+        /**
+         * Run icp to calculate camera motion
+         */
+        bool icp(const DepthMap &depth, Eigen::Affine3f* hint=NULL);
+
+        /**
+         * Integrate Depth given the last known position.
+         */
+        void integrateDepth(const DepthMap &depth);
+
+        /**
+         * Integrate color. This method is the final step (after icp() and integrateDepth()).
+         */
+        void integrateColor(const View& colors);
+
+
+
         /** \brief Returns camera pose at given time, default the last pose
           * \param[in] time Index of frame for which camera pose is returned.
           * \return camera pose
