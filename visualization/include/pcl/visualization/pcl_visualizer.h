@@ -1166,6 +1166,7 @@ namespace pcl
          * \param[in] value the value to be set
          * \param[in] id the shape object id
          * \param[in] viewport the view port where the shape's properties should be modified (default: all)
+         * \note When using \ref addPolygonMesh you you should use \ref setPointCloudRenderingProperties
          */
         bool
         setShapeRenderingProperties (int property, double value,
@@ -1178,6 +1179,7 @@ namespace pcl
           * \param[in] val3 the third value to be set
           * \param[in] id the shape object id
           * \param[in] viewport the view port where the shape's properties should be modified (default: all)
+          * \note When using \ref addPolygonMesh you you should use \ref setPointCloudRenderingProperties
           */
          bool
          setShapeRenderingProperties (int property, double val1, double val2, double val3,
@@ -1551,7 +1553,7 @@ namespace pcl
                    int viewport = 0);
 
         /** \brief Add a cone from a set of given model coefficients
-          * \param[in] coefficients the model coefficients (point_on_axis, axis_direction, radiu)
+          * \param[in] coefficients the model coefficients (see \ref pcl::visualization::createCone)
           * \param[in] id the cone id/name (default: "cone")
           * \param[in] viewport (optional) the id of the new viewport (default: 0)
           */
@@ -1561,7 +1563,7 @@ namespace pcl
                  int viewport = 0);
 
         /** \brief Add a cube from a set of given model coefficients
-          * \param[in] coefficients the model coefficients (Tx, Ty, Tz, Qx, Qy, Qz, Qw, width, height, depth)
+          * \param[in] coefficients the model coefficients (see \ref pcl::visualization::createCube)
           * \param[in] id the cube id/name (default: "cube")
           * \param[in] viewport (optional) the id of the new viewport (default: 0)
           */
