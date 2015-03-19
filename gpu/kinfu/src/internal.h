@@ -57,7 +57,10 @@ namespace pcl
     const int DIVISOR = 32767;     // SHRT_MAX;
 
 	//Should be multiple of 32
-    enum { VOLUME_X = 512, VOLUME_Y = 512, VOLUME_Z = 512 };
+    //enum { VOLUME_X = 512, VOLUME_Y = 512, VOLUME_Z = 512 };
+    enum { VOLUME_X = 384, VOLUME_Y = 384, VOLUME_Z = 384 };
+    //enum { VOLUME_X = 256, VOLUME_Y = 256, VOLUME_Z = 256 };
+    //enum { VOLUME_X = 128, VOLUME_Y = 128, VOLUME_Z = 128 };
 
 	
     const float VOLUME_SIZE = 3.0f; // in meters
@@ -270,7 +273,7 @@ namespace pcl
       */    
     void 
     updateColorVolume(const Intr& intr, float tranc_dist, const Mat33& R_inv, const float3& t, const MapArr& vmap, 
-            const PtrStepSz<uchar3>& colors, const float3& volume_size, PtrStep<uchar4> color_volume, int max_weight = 1);
+            const PtrStepSz<uchar3>& colors, const float3& volume_size, PtrStep<uchar4> color_volume, int max_weight = 1, const PtrStepSz<uchar1>& mask=PtrStepSz<uchar1>());
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Raycast and view generation        

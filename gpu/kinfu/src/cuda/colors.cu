@@ -93,6 +93,7 @@ namespace pcl
 
       PtrStep<float> vmap;
       PtrStepSz<uchar3> colors;
+      PtrStepSz<uchar1> mask;
 
       Mat33 R_inv;
       float3 t;
@@ -149,7 +150,7 @@ namespace pcl
           coo.x = __float2int_rn (v.x * intr.fx / v.z + intr.cx);
           coo.y = __float2int_rn (v.y * intr.fy / v.z + intr.cy);
 
-          if (coo.x >= 0 && coo.y >= 0 && coo.x < colors.cols && coo.y < colors.rows)
+          if (coo.x >= 0 && coo.y >= 0 && coo.x < colors.cols && coo.y < colors.rows  && (mask.rows==0 || mask(coo.y,coo.x).x!=0))
           {
             float3 p;
             p.x = vmap.ptr (coo.y)[coo.x];
@@ -209,11 +210,12 @@ namespace pcl
 
 void
 pcl::device::updateColorVolume (const Intr& intr, float tranc_dist, const Mat33& R_inv, const float3& t,
-                                const MapArr& vmap, const PtrStepSz<uchar3>& colors, const float3& volume_size, PtrStep<uchar4> color_volume, int max_weight)
+                                const MapArr& vmap, const PtrStepSz<uchar3>& colors, const float3& volume_size, PtrStep<uchar4> color_volume, int max_weight,const PtrStepSz<uchar1>& mask)
 {
   ColorVolumeImpl cvi;
   cvi.vmap = vmap;
   cvi.colors = colors;
+  cvi.mask = mask;
   cvi.color_volume = color_volume;
 
   cvi.R_inv = R_inv;

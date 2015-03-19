@@ -71,6 +71,7 @@ namespace pcl
         typedef pcl::gpu::PixelRGB PixelRGB;
 
         typedef DeviceArray2D<PixelRGB> View;
+        typedef DeviceArray2D<unsigned char> Mask;
         typedef DeviceArray2D<unsigned short> DepthMap;
 
         typedef pcl::PointXYZ PointType;
@@ -178,7 +179,7 @@ namespace pcl
         /**
          * Integrate color. This method is the final step (after icp() and integrateDepth()).
          */
-        void integrateColor(const View& colors);
+        void integrateColor(const View& colors, const Mask& mask);
 
 
 

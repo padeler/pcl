@@ -591,7 +591,8 @@ pcl::gpu::KinfuTracker::operator() (const DepthMap& depth, const View& colors, E
 
   if (res)
   {
-	  integrateColor(colors);
+	  Mask emptyMask;
+	  integrateColor(colors,emptyMask);
   }
 
   return res;
@@ -599,7 +600,7 @@ pcl::gpu::KinfuTracker::operator() (const DepthMap& depth, const View& colors, E
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void
-pcl::gpu::KinfuTracker::integrateColor(const View& colors)
+pcl::gpu::KinfuTracker::integrateColor(const View& colors, const Mask& mask)
 {
   if (color_volume_)
   {
@@ -613,7 +614,7 @@ pcl::gpu::KinfuTracker::integrateColor(const View& colors)
     float3& device_tcurr = device_cast<float3> (t);
 
     device::updateColorVolume(intr, tsdf_volume_->getTsdfTruncDist(), device_Rcurr_inv, device_tcurr, vmaps_g_prev_[0],
-        colors, device_volume_size, color_volume_->data(), color_volume_->getMaxWeight());
+        colors, device_volume_size, color_volume_->data(), color_volume_->getMaxWeight(),mask);
   }
 }
 
