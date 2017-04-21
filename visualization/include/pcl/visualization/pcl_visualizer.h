@@ -1142,16 +1142,30 @@ namespace pcl
           * \param[in] val3 the third value to be set
           * \param[in] id the point cloud object id (default: cloud)
           * \param[in] viewport the view port where the Point Cloud's rendering properties should be modified (default: all)
+          * \note The list of properties can be found in \ref pcl::visualization::LookUpTableRepresentationProperties.
           */
         bool
         setPointCloudRenderingProperties (int property, double val1, double val2, double val3,
                                           const std::string &id = "cloud", int viewport = 0);
 
+        /** \brief Set the rendering properties of a PointCloud (2x values - e.g., LUT minmax values)
+          * \param[in] property the property type
+          * \param[in] val1 the first value to be set
+          * \param[in] val2 the second value to be set
+          * \param[in] id the point cloud object id (default: cloud)
+          * \param[in] viewport the view port where the Point Cloud's rendering properties should be modified (default: all)
+          * \note The list of properties can be found in \ref pcl::visualization::LookUpTableRepresentationProperties.
+          */
+        bool
+        setPointCloudRenderingProperties (int property, double val1, double val2,
+                                          const std::string &id = "cloud", int viewport = 0);
+        
        /** \brief Set the rendering properties of a PointCloud
          * \param[in] property the property type
          * \param[in] value the value to be set
          * \param[in] id the point cloud object id (default: cloud)
          * \param[in] viewport the view port where the Point Cloud's rendering properties should be modified (default: all)
+         * \note The list of properties can be found in \ref pcl::visualization::LookUpTableRepresentationProperties.
          */
         bool
         setPointCloudRenderingProperties (int property, double value,
@@ -1161,6 +1175,7 @@ namespace pcl
          * \param[in] property the property type
          * \param[in] value the resultant property value
          * \param[in] id the point cloud object id (default: cloud)
+         * \note The list of properties can be found in \ref pcl::visualization::LookUpTableRepresentationProperties.
          */
         bool
         getPointCloudRenderingProperties (int property, double &value,
@@ -1179,6 +1194,7 @@ namespace pcl
          * \param[in] id the shape object id
          * \param[in] viewport the view port where the shape's properties should be modified (default: all)
          * \note When using \ref addPolygonMesh you you should use \ref setPointCloudRenderingProperties
+         * \note The list of properties can be found in \ref pcl::visualization::LookUpTableRepresentationProperties.
          */
         bool
         setShapeRenderingProperties (int property, double value,
@@ -1402,18 +1418,6 @@ namespace pcl
                               vtkSmartPointer<vtkTransform> transform,
                               const std::string &id = "PolyData",
                               int viewport = 0);
-
-        /** \brief Add a vtkPolyDataMapper as a mesh
-         * \param[in] polydatamapper vtkPolyDataMapper
-         * \param[in] id the model id/name (default: "PolyDataMapper")
-         * \param[in] viewport (optional) the id of the new viewport (default: 0)
-         * \return True if successful, false otherwise
-         * \note This allows to display a colored mesh, also see \ref PCL_VISUALIZER_LUT.
-         */
-       bool
-       addModelFromPolyData (vtkSmartPointer<vtkPolyDataMapper> polydatamapper,
-                             const std::string & id = "PolyDataMapper",
-                             int viewport = 0);
 
         /** \brief Add a PLYmodel as a mesh
           * \param[in] filename of the ply file
@@ -1867,10 +1871,18 @@ namespace pcl
         setSize (int xw, int yw);
 
         /** \brief Use Vertex Buffer Objects renderers.
+          * This is an optimization for the obsolete OpenGL backend. Modern OpenGL2 backend (VTK ≥ 6.3) uses vertex
+          * buffer objects by default, transparently for the user.
           * \param[in] use_vbos set to true to use VBOs 
           */
         void
         setUseVbos (bool use_vbos);
+
+        /** \brief Set the ID of a cloud or shape to be used for LUT display
+          * \param[in] id The id of the cloud/shape look up table to be displayed
+          * The look up table is displayed by pressing 'u' in the PCLVisualizer */
+        void
+        setLookUpTableID (const std::string id);
 
         /** \brief Create the internal Interactor object. */
         void
